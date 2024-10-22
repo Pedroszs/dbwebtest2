@@ -1,0 +1,32 @@
+services:
+
+  dbweb:
+    build: .  # indica que o Dockerfile está neste diretório
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  
+    environment:
+      - DEBUG=1
+      - DB_HOST=mysqldb
+      - DB_PORT=3306 
+      - DB_USER=root  
+      - DB_PASSWORD=teste123
+    command:  ./wait-for-it.sh mysqldb:3306 -- python manage.py runserver 0.0.0.0:8000    
+    depends_on:
+      - mysqldb
+
+  mysqldb:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_HOST: mysqldb    
+      MYSQL_DATABASE: contrato_teste 
+      MYSQL_ROOT_PASSWORD: teste123
+    ports:
+      - "3306:3306"  
+    volumes:
+      - mysql_data:/var/lib/mysql  # Caminho correto do volume para MySQL
+
+volumes:
+  mysql_data:

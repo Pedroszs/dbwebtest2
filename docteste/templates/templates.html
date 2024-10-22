@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar Contratos</title>
+    <h1>Upload do Documento Modelo</h1>
+
+    <!-- Formulário para upload -->
+    <form id="gerar-contrato-form" method="POST" action="{% url 'gerar_contrato_especifico' %}">
+        {% csrf_token %}
+        <label for="user_id">Selecione o usuário:</label>
+        <select name="user_id" required>
+            <option value="">Selecione um usuário</option>
+            {% for usuario in usuarios %}
+                <option value="{{ usuario.0 }}">{{ usuario.1 }}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="documento_base">Selecione o tipo de contrato:</label>
+        <select name="documento_base" required>
+            <option value="">Selecione um contrato</option>
+            <option value="contrato_luz.docx">Contrato Luz</option>
+            <option value="contrato_agua.docx">Contrato Água</option>
+            <option value="contrato_energia.docx">Contrato Energia</option>
+        </select>
+    
+        <button type="submit">Gerar Contrato</button>
+    </form>
+    
+    <script>
+        document.getElementById('gerar-contrato-form').onsubmit = function(event) {
+            event.preventDefault(); // Previne o envio normal do formulário
+            const form = this;
+            const formData = new FormData(form);
+    
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.open(data.pdf_url, '_blank'); // Abre o PDF na nova aba
+                } else {
+                    alert(`Erro: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao gerar contrato.');
+            });
+        };
+    </script>
+</html>
