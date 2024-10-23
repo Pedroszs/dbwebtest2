@@ -11,7 +11,7 @@ from django.shortcuts import redirect
 from django.http import FileResponse
 
 def home(request):
-    conn = mysql.connector.connect(host="mysqldb", user="root", password="teste123", database="contrato_teste")
+    conn = mysql.connector.connect(host="localhost", user="root", password="teste123", database="contrato_teste")
     my_cursor = conn.cursor()
 
     # Buscar todos os usuários da tabela
@@ -49,7 +49,7 @@ def gerar_contrato_especifico(request):
             return JsonResponse({"status": "error", "message": "O documento base selecionado não foi encontrado."})
 
         try:
-            conn = mysql.connector.connect(host="mysqldb", user="root", password="teste123", database="contrato_teste")
+            conn = mysql.connector.connect(host="localhost", user="root", password="teste123", database="contrato_teste")
             my_cursor = conn.cursor()
 
             tabela_sql = "SELECT ut_nome, ut_nascimento, ut_endereco FROM utentes_data WHERE id = %s"
